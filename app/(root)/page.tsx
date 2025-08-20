@@ -13,7 +13,7 @@ const Home = async () => {
     <div>
       <Navbar />
       <Hero />
-      <div className="all-movies">
+      <div className="flex flex-col gap-8 mt-16 pl-10">
         {genres.map((genre: Genre) => (
           <CategoryList key={genre.id} title={genre.name} movies={genre.movies} />
         ))}
