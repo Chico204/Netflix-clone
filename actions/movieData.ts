@@ -14,4 +14,5 @@ export const fetchGenreMovies = async ()=>{
         const data = await getApiResponse(`/discover/movie?with_genres=${genre.id}`);
         genre.movies = data.results;
     }
+    return genres;
 }
