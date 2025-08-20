@@ -1,12 +1,15 @@
 "use client";
 
+import { SearchOffSharp } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 
 
 const Navbar = () => {
+    const router  = useRouter()
 const [search, setSearch] = useState<string>('');
 const [dropDownMenu, setDropDownMenu] = useState<boolean>(false);
 
@@ -44,7 +47,10 @@ useEffect(() => {
     <div className='flex gap-8 items-center'>
         <div className=' flex justify-between items-center gap-2 px-4 py-2 rounded-xl'>
             <input type="text" placeholder='Search movie...'className=' w-40 bg-transparent outline-none text-body-medium text-white' value={search} onChange={(e)=> setSearch(e.target.value)} />
-            <SearchIcon className='size-7 cursor-pointer text-white hover:text-red-500'/>
+
+            <button disabled={search === ""} >
+            <SearchIcon className='size-7 cursor-pointer text-white hover:text-red-500' onClick={()=> router.push(`/search/${search}`)}/>
+                </button>
         </div>
         <img src="/assets/profile_icon.jpg" alt="" className=' w-8 h-auto cursor-pointer' onClick={()=> setDropDownMenu(!dropDownMenu) }/>
 
