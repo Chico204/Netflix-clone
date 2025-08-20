@@ -19,7 +19,7 @@ const MovieCard = ({ movie }: { movie: Movie }) => {
         alt={movie?.title || movie?.name}
       />
     </div>
-    {showModal && <Modal/>}
+    {showModal && <Modal movie={movie} closeModal={closeModal}/>}
     
     </>
   );
