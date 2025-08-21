@@ -3,7 +3,7 @@
 import { SearchOffSharp } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 
