@@ -2,6 +2,7 @@
 
 import { Genre, Movie, Video } from "@/lib/types";
 import { AddCircle, CancelRounded } from "@mui/icons-material";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -13,6 +14,8 @@ interface Props {
 const Modal =({movie, closeModal}: Props)=>{
     const [video, setVideo] = useState("");
     const [genres, setGenres] = useState<Genre[]>([]);
+const {data: session} = useSession();
+
     const options = {
   method: 'GET',
   headers: {

@@ -2,6 +2,7 @@
 
 import { SearchOffSharp } from '@mui/icons-material';
 import SearchIcon from '@mui/icons-material/Search';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
@@ -30,6 +31,9 @@ useEffect(() => {
     }
 }, []);
 
+const handleLogout =()=>{
+    signOut({ callbackUrl: '/login' })
+}
   return (
    <div className={ `top-0 z-10 sticky flex items-center justify-between py-3 px-10 ${isScrolled ? 'bg-black' : 'bg-transparent'} transition-all duration-300` }>
     <Link href={'/'}>
@@ -61,7 +65,7 @@ useEffect(() => {
         <Link href={'/movies'}>Movies</Link>
         <Link href={'/new-and-popular'} >New & Popular</Link>
         <Link href={'/my-list'} >My List</Link>
-        <a href="Log Out">Log Out</a>
+        <a onClick={handleLogout} >Log Out</a>
             </div>
             )
         }
