@@ -1,3 +1,5 @@
+"use client"
+
 import { EmailOutlined, LockOutlined, PersonOutline } from "@mui/icons-material";
 import { Inter } from "next/font/google";
 import Link from "next/link";
@@ -21,6 +23,9 @@ const AuthForm = ({ type }: { type: "register" | "login" }) => {
     type === "register" ? {username:"", email:"", password:""} : {email:"", password:""},
 }
   )
+  const onSubmit = (data: FormData)=>{
+    console.log(data)
+  }
   return (
     <div
       className="h-screen w-full bg-cover bg-center relative"
@@ -32,36 +37,64 @@ const AuthForm = ({ type }: { type: "register" | "login" }) => {
       {/* Centered form */}
       <div className="relative z-10 flex items-center justify-center h-full">
         <div className="w-1/3 py-7 px-8 max-sm:w-5/6 flex flex-col items-center justify-center gap-6 bg-black bg-opacity-70 shadow-md rounded-lg">
-          <form action="" className="flex flex-col items-center gap-5 w-full">
+          <form  className="flex flex-col items-center gap-5 w-full" onSubmit={handleSubmit(onSubmit)}>
             {type === "register" && (
+                <>
               <div className="flex items-center justify-between px-5 py-3 rounded bg-[#333] w-full">
                 <input
+                {...register("username",{required: "username is required",
+                    validate: (value: string | undefined)=> {
+                        if (!value || value.length < 2){
+                            return "Username must be at least 2 characters long"
+                        }
+                        return true
+                     }
+                })}
                   type="text"
                   placeholder="Username"
                   className="w-full bg-transparent text-white outline-none placeholder-gray-300"
                 />
                 <PersonOutline sx={{ color: "white" }} />
               </div>
+               {errors.username && (
+                  <p className="text-red-500 font-semibold">{errors.username.message}</p>
+                )}
+                </>
             )}
             <div className="flex items-center justify-between px-5 py-3 rounded bg-[#333] w-full">
-              <input
+              <input  {...register("email",{required: "Email is required",
+                  
+                })}
                 type="email"
                 placeholder="Email"
                 className="w-full bg-transparent text-white outline-none placeholder-gray-300"
               />
               <EmailOutlined sx={{ color: "white" }} />
             </div>
+             {errors.email && <p className="text-red-500 font-semibold">{errors.email.message}</p>}
+
             <div className="flex items-center justify-between px-5 py-3 rounded bg-[#333] w-full">
-              <input
+              <input {...register("password",{required: "Password is required",
+                    validate: (value: string | undefined)=> {
+                        if (!value || value.length < 5 || value.length > 20  ||
+                      !value.match(/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/)){
+                            return "Password must be between 5 and 20 characters long with at least one special"
+                        }
+                        return true
+                     }
+                })}
+
                 type="password"
                 placeholder="Password"
                 className="w-full bg-transparent text-white outline-none placeholder-gray-300"
               />
               <LockOutlined sx={{ color: "white" }} />
             </div>
-
+         {errors.password && (
+              <p className="text-red-500 font-semibold">{errors.password.message}</p>
+            )}
             {/* Netflix red button */}
-            <button className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded">
+            <button className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded" type="submit">
               {type === "register" ? "Join Free" : "Let's Watch"}
             </button>
           </form>
