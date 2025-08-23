@@ -1,9 +1,12 @@
 "use client"
 
 import { EmailOutlined, LockOutlined, PersonOutline } from "@mui/icons-material";
+import { signIn } from "next-auth/react";
 import { Inter } from "next/font/google";
 import Link from "next/link";
-import { useForm } from "react-hook-form"
+import { useRouter } from "next/navigation";
+import { useForm, SubmitHandler } from "react-hook-form"
+import toast from "react-hot-toast";
 import { Interface } from "readline";
 
 interface FormData {
@@ -13,6 +16,7 @@ interface FormData {
 }
 
 const AuthForm = ({ type }: { type: "register" | "login" }) => {
+    const router = useRouter()
      const {
     register,
     handleSubmit,
@@ -23,8 +27,39 @@ const AuthForm = ({ type }: { type: "register" | "login" }) => {
     type === "register" ? {username:"", email:"", password:""} : {email:"", password:""},
 }
   )
-  const onSubmit = (data: FormData)=>{
-    console.log(data)
+   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    let res;
+
+    if (type === "register") {
+      res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        router.push("/login");
+      } else {
+        toast.error("Something went wrong");
+      }
+    }
+
+    if (type === "login"){
+        res = await signIn("credentials", {
+            ...data, 
+            redirect: false,
+        })
+
+        if(res && res.ok){
+            router.push("/")
+            toast.success("Logged in successfully") 
+    
+        }else{
+            toast.error("Invalid credentials")
+        }
+    }
   }
   return (
     <div
