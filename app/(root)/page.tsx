@@ -6,8 +6,8 @@ import { Genre } from "@/lib/types"
 
 const Home = async () => {
   const genres = await fetchGenreMovies()
-  const example = genres.slice(0,2)
-  console.log(example) // For debugging purpose
+ 
+ 
  
   return (
     <div>

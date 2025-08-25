@@ -1,20 +1,35 @@
 "use client";
 
 import { Genre, Movie, Video } from "@/lib/types";
-import { AddCircle, CancelRounded } from "@mui/icons-material";
+import { AddCircle, CancelRounded, RemoveCircle } from "@mui/icons-material";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import Loader from "./Loader";
+import { User } from "next-auth";
+import { useRouter } from "next/navigation";
+
 
 interface Props {
     movie: Movie;
     closeModal: () => void;
 }
 
+interface user{
+    email: string;
+    username: string;
+   favorites: number[];
+}
 
 const Modal =({movie, closeModal}: Props)=>{
+    const router = useRouter();
     const [video, setVideo] = useState("");
     const [genres, setGenres] = useState<Genre[]>([]);
+   const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState<User | null>(null);
+    const [isFavorite, setIsFavorite] = useState(false);
+
 const {data: session} = useSession();
+
 
     const options = {
   method: 'GET',
@@ -47,9 +62,46 @@ useEffect(() => {
     getMovieDetails();
 }, [movie]);
 
+//HANDLE MY LIST 
+const getUser = async()=>{
+    try{
+        const res = await fetch(`/api/user/${session?.user?.email}`);
+    const data = await res.json();
+    setUser(data)
+    setIsFavorite(data.favorites.find((item: number) => item === movie.id) ? true : false);
+    setLoading(false);
+    } catch(err){
+        console.log("Error fetching user data:", err);
+    }
+   
+}
+
+useEffect(() => {
+    if (session) getUser();
+}, [session]);
+
+ const handleMyList = async () => {
+    try{
+        const res = await fetch(`/api/user/${session?.user?.email}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ movieId: movie.id }),
+        })
+        const data = await res.json();
+        setUser(data);
+        setIsFavorite(data.favorites.find((item: number) => item === movie.id));
+        router.refresh();
+    } catch(err){
+        console.log("Failed to handle my list", err);
+    }
+ }
+  
 
 
-    return (
+
+    return loading ? <Loader/> : (
 <div className="fixed inset-0 z-30 bg-black bg-opacity-95 w-full max-w-2xl mx-auto overflow-hidden overflow-y-scroll scrollbar-hide rounded-xl">
   {/* Close Button */}
   <button
@@ -87,7 +139,10 @@ useEffect(() => {
       </div>
       <div className="flex items-center gap-2">
         <p className="font-bold">Add To List</p>
-        <AddCircle className="cursor-pointer text-red-500" />
+        {isFavorite ? (<RemoveCircle className="cursor-pointer text-red-500" onClick={handleMyList}/>):(
+              <AddCircle className="cursor-pointer text-red-500" onClick={handleMyList} />
+        )}
+       
       </div>
     </div>
 
