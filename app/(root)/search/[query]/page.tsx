@@ -1,17 +1,19 @@
-export const dynamic = "force-dynamic"; // 👈 ensures dynamic params work
+import Navbar from '@/components/Navbar'
+import SearchResults from '@/components/SearchResults'
 
-import Navbar from "@/components/Navbar";
-import SearchResults from "@/components/SearchResults";
+interface SearchPageProps {
+  params: Promise<{
+    query: string
+  }>
+}
 
-const SearchPage = ({ params }: { params: { query: string } }) => {
-  const query = params.query;
+export default async function SearchPage({ params }: SearchPageProps) {
+  const { query } = await params
 
   return (
     <>
       <Navbar />
       <SearchResults query={query} />
     </>
-  );
-};
-
-export default SearchPage;
+  )
+}

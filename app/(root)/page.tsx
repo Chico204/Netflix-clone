@@ -3,7 +3,7 @@ import CategoryList from "@/components/CategoryList"
 import Hero from "@/components/Hero"
 import Navbar from "@/components/Navbar"
 import { Genre } from "@/lib/types"
-
+export const dynamic = "force-dynamic"
 const Home = async () => {
   const genres = await fetchGenreMovies()
  

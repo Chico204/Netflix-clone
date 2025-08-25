@@ -1,59 +1,59 @@
-import { connectToDB } from "@/lib/mongoDB";
-import User from "@/models/User";
-import { connect } from "http2";
-import { NextRequest } from "next/server";
+import { connectToDB } from "@/lib/mongoDB"
+import User from "@/models/User"
+import { NextRequest } from "next/server"
 
-export const GET = async (req: NextRequest, { params }: { params: { email: string } }) => {
-    try{
-        await connectToDB();
+export const GET = async (
+  req: NextRequest,
+  { params }: { params: Promise<{ email: string }> }
+) => {
+  try {
+    await connectToDB()
 
-        const {email} = params;
+    const { email } = await params
 
-        const user = await User.findOne({email: email})
+    const user = await User.findOne({ email })
 
-        if(!user){
-            return new Response("User not found")
-
-        }
-        return new Response(JSON.stringify(user), {status: 200})
-        
-
-    } catch (err: any) {
-        console.log(err);
-        throw new Error(`Failed to get user: ${err.message}`);
+    if (!user) {
+      return new Response("User not found", { status: 404 })
     }
+
+    return new Response(JSON.stringify(user), { status: 200 })
+  } catch (err: any) {
+    console.error(err)
+    return new Response(`Failed to get user: ${err.message}`, { status: 500 })
+  }
 }
 
-export const POST= async (req: NextRequest, { params }: { params: { email: string } }) => {
-    try{
-        await connectToDB();
+export const POST = async (
+  req: NextRequest,
+  { params }: { params: Promise<{ email: string }> }
+) => {
+  try {
+    await connectToDB()
 
-        const {email} = params;
+    const { email } = await params
 
-        const user = await User.findOne({email: email})
+    const user = await User.findOne({ email })
 
-        if(!user){
-            return new Response("User not found")
-
-        }
-
-        const {movieId} = await req.json()
-
-        const isFavorite = user.favorites.includes(movieId);
-
-        if (isFavorite) {
-            user.favorites = user.favorites.filter((id: number) => id !== movieId);
-        } else {
-            user.favorites.push(movieId);
-        }
-
-        await user.save();
-
-        return new Response(JSON.stringify(user), {status: 200})
-        
-
-    } catch (err: any) {
-        console.log(err);
-        throw new Error(`Failed to get user: ${err.message}`);
+    if (!user) {
+      return new Response("User not found", { status: 404 })
     }
+
+    const { movieId } = await req.json()
+
+    const isFavorite = user.favorites.includes(movieId)
+
+    if (isFavorite) {
+      user.favorites = user.favorites.filter((id: number) => id !== movieId)
+    } else {
+      user.favorites.push(movieId)
+    }
+
+    await user.save()
+
+    return new Response(JSON.stringify(user), { status: 200 })
+  } catch (err: any) {
+    console.error(err)
+    return new Response(`Failed to update user: ${err.message}`, { status: 500 })
+  }
 }
