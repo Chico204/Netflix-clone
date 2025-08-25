@@ -80,7 +80,7 @@ const HeroCard = ({ trendingMovie }: { trendingMovie: Movie }) => {
         <div className="absolute inset-0 bg-black/50" />
 
         {/* Gradient + blur at top for navbar readability */}
-        <div className="absolute top-0 left-0 w-full h-25 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm" />
+        <div className="absolute top-0 left-0 w-full md:h-25 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-sm" />
       </div>
 
       {/* Hero content */}

@@ -17,11 +17,10 @@ export const fetchGenreMovies = async ()=>{
     return genres;
 }
 export const searchMovies = async (query: string) => {
-  const data = await getApiResponse(`/search/movie?query=${query}`)
-  const searchedMovies = data.results
+  const data = await getApiResponse(`/search/movie?query=${query}`);
+  return data.results;
+};
 
-  return searchedMovies
-}
 
 export const fetchMovieDetails = async (id: number) => {
    const  movieDetails = await getApiResponse(`/movie/${id}?append_to_response=videos`)
